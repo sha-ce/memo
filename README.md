@@ -1,53 +1,51 @@
 # rclone mount
-まず，rcloneによるマウントを行う．以下`<***>`は変数を表す．個人で適当なものに変更してもらう．
-マウント先の`<machine>`内にある`'/home/<user>/share'`フォルダを`'/home/<aaaa0000>/share'`からアクセスできるようにする．
+apgpuに関するセットアップのためのドキュメントです．
+
+# minicondaを使う場合
+[`Anaconda`](https://www.anaconda.com/download/success)では5GBのquota制限に到達してしまうようだが，[`miniconda`](https://docs.anaconda.com/free/miniconda/index.html)であれば容量が小さいのでインストールは可能．しかし，これらのインストールはできても`torch`などのライブラリをインストールするとquota制限に到達してしまう．そこで，minicondaをマウント先のディスクに書き込んでみたが，`conda`コマンド実行時にエラーが発生する．
 ```bash
-rclone mount <machine>:/home/<user>/share /home/<aaaa0000>/share &
+$ which conda
+/home/<user*>/miniconda3/bin/conda
 ```
-# pip 
-`pip3`コマンドを使ってライブラリをインストールしたいが`pip`や`pip3`は使えないと思われる．ローカルで`pip`コマンドを使えるようにする．
+`which`でコマンドのパスがマウント先を指していると問題があるよう．<br>
+
+そこで，ライブラリを保存する`miniconda3/lib`，`miniconda3/pkgs`をマウント先のディスクにアクセスするように設定することquota制限を回避することができた．
+
+
+適当に既存の`miniconda3/lib`，`miniconda3/pkgs`直下のファイルを移して，シンボリックリンクによりマウント先を指すように設定すれば問題ないだろう．
+```bash
+ln -s /home/<user*>/<mount-dir>/lib /home/<user*>/miniconda3/lib
+ln -s /home/<user*>/<mount-dir>/pkgs /home/<user*>/miniconda3/pkgs
+```
+<br><br>
+
+# 既存のpython3環境を使う場合
+`usr/bin/python3`のパスのpython3を既に使用できる．
+
+### pip 
+`pip3`コマンドを使ってライブラリをインストールしたいが`pip`や`pip3`は使えない？．ローカルで`pip`コマンドを使えるようにする．
 ```bash
 wget https://bootstrap.pypa.io/get-pip.py
 ```
 `get-pip.py`がダウンロードされる．<br>
-このファイルを実行したいが，その前に，シンボリックリンクを作成して，マウント先に書き込むように設定する．
-`get-pip.py`を実行すると
-```
-.cache/
-    pip/
+後に`pip`は`~/.local/bin/pip`を指すので，これをマウント先に指定しないようにする．
 
-.local/
-    bin/
-    lib/
-```
-以上のようなディレクトリ構造で複数のファイルが作成される．<br>
-ここで，`.local/bin/pip`に`pip`のパスを通すのが一般的だが，どうやらコマンドのパスをマウント先に設定すると権限がないためか，詳しくはわからないが，コマンドの実行時にエラーがはかれる．そのため，`.local/bin`はシンボリックリンクの設定から省く．
 ### symbolick link
+`.local/lib`がマウント先の`local/lib`にリンクされる．
 ```bash
-cd
-mkdir ./share/cache
-ln -s ./share/cache .cache
+ln -s /home/<user*>/<mount-dir>/local/lib /home/<user*>/.local/lib
 ```
-```bash
-cd
-mkdir ./share/local
-mkdir ./share/local/lib
-mkdir ./.local
-ln -s ./share/local/lib .local/lib
-```
-以上で，`.cache`にアクセスすると，マウント先の`share/cache`にリンクされ，`.local/lib`は，マウント先の`share/local/lib`にリンクされる．
 ### get pip
 マウント先に書き込むので少し時間がかかるよう．
 ```bash
-cd
 python3 get_pip.py
 ```
-パスを通す．
+パスを通す．ログアウトしても切れないように`.bashrc`ファイル内に書き込む．
 ```bash
 export PATH=$PATH:~/.local/bin
 ```
 `pip`，`pip3`コマンドが使えるようになった．
-# pip install
+### pip install
 例えば，`torch`のインストールは以下のようにできる．
 ```bash
 pip3 install torch torchvision torchaudio
