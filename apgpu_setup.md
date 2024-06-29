@@ -1,5 +1,4 @@
-# rclone mount
-apgpuに関するセットアップのためのドキュメントです．
+# apgpuに関するセットアップのためのドキュメントです．
 
 # minicondaを使う場合
 [`Anaconda`](https://www.anaconda.com/download/success)では5GBのquota制限に到達してしまうようだが，[`miniconda`](https://docs.anaconda.com/free/miniconda/index.html)であれば容量が小さいのでインストールは可能．しかし，これらのインストールはできても`torch`などのライブラリをインストールするとquota制限に到達してしまう．そこで，minicondaをマウント先のディスクに書き込んでみたが，`conda`コマンド実行時にエラーが発生する．
