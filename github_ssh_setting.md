@@ -19,3 +19,14 @@ ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
 - `Add SSH key`ボタンを押す。
 
 以上で、sshを使用してgitを使用できる。
+
+
+### リモートリポジトリのURLを確認する
+```
+git remote -v
+```
+
+### リモートリポジトリのURLを変更
+```
+git remote set-url origin <new url>
+```
