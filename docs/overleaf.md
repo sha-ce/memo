@@ -17,12 +17,12 @@
 
 `latexmkrc`がプロジェクト直下にあれば問題ないので、ディレクトリから出す必要性はあまりないが、個人的にこっちの方が作業しやすいのでそうしている。
 
-![](./images/dir.png)
+![](../images/dir.png)
 
 ## コンパイラを `pdfLaTeX` → `LaTeX` 
 左上の`メニュー`からコンパイラを変更する
 
-![](./images/compiler.png)
+![](../images/compiler.png)
 
 ## `latexmkrc`ファイルを追加
 左上のファイルアイコンから新規ファイルを作成して`latexmkrc`というファイルを作成する
@@ -34,7 +34,7 @@ $makeindex = 'mendex %O -o %D %S';
 ```
 ファイルに以上4行をペースト
 
-![](./images/latexmkrc.png)
+![](../images/latexmkrc.png)
 
 ## 終わり
 コンパイルするとできているはず。
